@@ -16,7 +16,7 @@ function duration(date) {
     return new Date().getTime() - date.getTime()
 }
 
-async function callInterval(interval, expectedResult, callback) {
+async function callInterval(interval, callback) {
     while(true) {
         const start = new Date()
         if (await callback() === true) {
