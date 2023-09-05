@@ -19,8 +19,7 @@ function duration(date) {
 async function callInterval(interval, expectedResult, callback) {
     while(true) {
         const start = new Date()
-        const result = await callback()
-        if (result === true) {
+        if (await callback() === true) {
             return
         }
         const elapsedMs = duration(start)
