@@ -9,15 +9,9 @@ function wrapFunc(logic, callback) {
     if (callback && typeof callback != 'function') {
         throw new Error('callback defined but not as a function')
     }
-    return callback ? logic().then((result) => {
-        try {
-            callback(null, result)
-        } catch (e) {}
-    }).catch((e) => {
-        try {
-            callback(e)
-        } catch (e) {}
-    }) : logic()
+    return callback ? logic()
+        .then((result) => callback(null, result))
+        .catch((e) => callback(e)) : logic()
 }
 
 function sum(a, b, callback) {

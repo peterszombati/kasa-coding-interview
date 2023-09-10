@@ -13,13 +13,13 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(() => resolve(), ms))
 }
 
-function duration(date) {
-    return new Date().getTime() - date.getTime()
+function duration(startMs) {
+    return Date.now() - startMs
 }
 
 async function callInterval0(interval, callback) {
     while(true) {
-        const start = new Date()
+        const start = Date.now()
         if (await callback() === true) {
             return
         }
@@ -30,9 +30,9 @@ async function callInterval0(interval, callback) {
 
 // more accurate solution
 async function callInterval1(interval, callback) {
-    let mainStart = new Date()
+    let mainStart = Date.now()
     while(true) {
-        const start = new Date()
+        const start = Date.now()
         if (await callback() === true) {
             return
         }
@@ -40,7 +40,7 @@ async function callInterval1(interval, callback) {
         if (elapsedMs < interval) {
             await sleep(interval - duration(mainStart) % interval)
         } else {
-            mainStart = new Date()
+            mainStart = Date.now()
         }
     }
 }
