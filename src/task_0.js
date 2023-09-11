@@ -9,9 +9,14 @@ function wrapFunc(logic, callback) {
     if (callback && typeof callback != 'function') {
         throw new Error('callback defined but not as a function')
     }
-    return callback ? logic()
-        .then((result) => callback(null, result))
-        .catch((e) => callback(e)) : logic()
+    const promise = logic()
+    if (callback) {
+        return Promise.race([
+            promise.then((result) => callback(null, result)),
+            promise.catch((e) => callback(e)),
+        ])
+    }
+    return promise
 }
 
 function sum(a, b, callback) {
