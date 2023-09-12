@@ -3,21 +3,29 @@ more details in the js files
 ### first task
 ```js
 function wrapFunc(logic, callback) {
-    if (callback && typeof callback != 'function') {
-        throw new Error('callback defined but not as a function')
-    }
-    const promise = logic()
     if (callback) {
-        return Promise.race([
-            promise.then((result) => callback(null, result)),
-            promise.catch((e) => callback(e)),
-        ])
+        if (typeof callback != 'function') {
+            throw new Error('callback defined but not as a function')
+        }
+
+        let result
+        try {
+            result = logic()
+        } catch (e) {
+            return callback(e)
+        }
+
+        return result instanceof Promise ? Promise.race([
+            result.then((result) => callback(null, result)),
+            result.catch((e) => callback(e)),
+        ]) : callback(null, result)
     }
-    return promise
+
+    return logic()
 }
 
 function sum(a, b, callback) {
-    return wrapFunc(async () => {
+    return wrapFunc(() => {
         if (typeof a != 'number') {
             throw new Error('"a" is not a number')
         }
